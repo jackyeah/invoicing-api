@@ -15,6 +15,7 @@
 //$app->group(['prefix' => ''], function () use ($app) {
     //需要身份驗證的後台功能
     $app->group(['prefix' => 'backend', 'middleware' => 'auth'], function () use ($app) {
+    //$app->group(['prefix' => 'backend'], function () use ($app) {
 
         $app->post('upload/image', 'UploadController@image');
 
@@ -132,6 +133,9 @@
             // 刪除維護資料
             $app->post('delete', 'MaintainController@delete');
         });
+
+        // 取得廠商清單
+        $app->get('manufacturers', 'ManufacturersController@index');
     });
 
     $app->post('admin/login', 'AdminController@login');

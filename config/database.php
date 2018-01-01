@@ -115,7 +115,7 @@ return [
     |
     */
 
-    /*'redis' => [
+    'redis' => [
 
         'cluster' => false,
 
@@ -139,6 +139,6 @@ return [
             'port' => env('REDIS_PORT', 6379),
             'database' => 1,
         ],
-    ],*/
+    ],
 
 ];

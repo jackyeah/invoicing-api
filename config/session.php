@@ -7,7 +7,7 @@
  */
 
 return [
-    'driver' => env('SESSION_DRIVER', 'file'),//默认使用file驱动，你也可以在.env中配置
+    'driver' => env('SESSION_DRIVER', 'redis'),//默认使用file驱动，你也可以在.env中配置
     'lifetime' => 120,//缓存失效时间
     'expire_on_close' => false,
     'encrypt' => false,
