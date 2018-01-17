@@ -18,7 +18,7 @@ use App\Http\Helper\ErrorCode;
 class PurchaseController extends InitController
 {
     use GetParamsTrait;
-    
+
     /**
      * 進貨
      * @return array
@@ -32,7 +32,6 @@ class PurchaseController extends InitController
                 'manufacturers' => '',
                 'remark' => '',
                 'name' => 'required',
-                //'itemNo' => ['required', 'min:3', 'max:20', 'regex:/^((?=.*[A-Za-z0-9]))^.*$/', 'unique:'],
                 'coast' => 'required|int',
                 'price' => 'required|int',
                 'purchaseDetail' => 'required'
