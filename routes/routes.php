@@ -20,8 +20,9 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
     // 進貨
     $app->group(['prefix' => 'purchase'], function () use ($app) {
         $app->post('', 'PurchaseController@create');
+
+        // 查看進貨紀錄
+        $app->get('', 'PurchaseController@index');
     });
 
-    // 查看進貨紀錄
-    $app->get('', 'PurchaseController@index');
 });
