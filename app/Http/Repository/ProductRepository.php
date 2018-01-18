@@ -24,6 +24,13 @@ class ProductRepository extends InitRepository implements RepositoryInterface
         parent::__construct(new Product());
     }
 
+    /**
+     * @param $name
+     * @param $purchase_date
+     * @param $coast
+     * @param $price
+     * @return bool|mixed
+     */
     public function create($name, $purchase_date, $coast, $price)
     {
         $this->connectionMaster();
@@ -40,6 +47,5 @@ class ProductRepository extends InitRepository implements RepositoryInterface
             Log::error(LogHelper::toFormatString($e->getMessage()));
             return false;
         }
-
     }
 }

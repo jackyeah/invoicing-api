@@ -31,6 +31,12 @@ class ProductStyleRepository extends InitRepository implements RepositoryInterfa
         return $this->queryTryCatch(function () use ($arr_insert) {
             return $this->model->insert($arr_insert);
         });
+    }
 
+    public function getData($product_id)
+    {
+        return $this->selectTryCatch(function () use ($product_id) {
+            return $this->model->select('id', 'quality', 'updated_at')->where('product_id', $product_id)->get()->toArray();
+        });
     }
 }

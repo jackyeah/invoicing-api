@@ -13,11 +13,24 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repository;
 use App\Http\Controllers\Traits\GetParamsTrait;
+use App\Http\Services\PurchaseService;
 use App\Http\Helper\ErrorCode;
 
 class PurchaseController extends InitController
 {
     use GetParamsTrait;
+
+    private $service;
+
+    public function __construct(PurchaseService $purchaseService)
+    {
+        $this->service = $purchaseService;
+    }
+
+    public function index()
+    {
+
+    }
 
     /**
      * 進貨
@@ -45,11 +58,11 @@ class PurchaseController extends InitController
         // 檢查進貨細節的資料是否正確
         $array_purchaseDetail = json_decode($params['purchaseDetail'], TRUE);
 
-        if(empty($array_purchaseDetail)){
+        if (empty($array_purchaseDetail)) {
             return $this->fail(ErrorCode::VALIDATE_ERROR);
         }
 
-        foreach ($array_purchaseDetail as $item){
+        foreach ($array_purchaseDetail as $item) {
             // 驗證參數
             $validatorDetail = Validator::make($item,
                 [
@@ -68,7 +81,7 @@ class PurchaseController extends InitController
         $repository = new Repository\ProductRepository();
         $result_id = $repository->create($params['name'], $params['date'], $params['coast'], $params['price']);
 
-        if(! $result_id){
+        if (!$result_id) {
             return $this->fail(ErrorCode::UNABLE_WRITE);
         }
 
@@ -82,10 +95,14 @@ class PurchaseController extends InitController
         $repository_style = new Repository\ProductStyleRepository();
         $result = $repository_style->create($array_purchaseDetail);
 
-        if($result){
-            return $this->success();
-        }else{
-            return $this->fail(ErrorCode::UNABLE_WRITE);
-        }
+        // 取得剛剛存的id
+        $result_style_data = $repository_style->getData($result_id);
+        $result_style_data = $this->service->dataFormat($result_style_data);
+
+        // 將資料存至`purchase_record`
+        $repository_record = new Repository\PurchaseRecordRepository();
+        $repository_record->create($result_style_data);
+
+        return $this->success();
     }
 }
