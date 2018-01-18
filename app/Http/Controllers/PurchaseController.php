@@ -27,9 +27,15 @@ class PurchaseController extends InitController
         $this->service = $purchaseService;
     }
 
+    /**
+     * 查看進貨紀錄
+     * @return array
+     */
     public function index()
     {
+        $repository_record = new Repository\PurchaseRecordRepository();
 
+        return $this->success($repository_record->index());
     }
 
     /**
@@ -97,7 +103,7 @@ class PurchaseController extends InitController
 
         // 取得剛剛存的id
         $result_style_data = $repository_style->getData($result_id);
-        $result_style_data = $this->service->dataFormat($result_style_data);
+        $result_style_data = $this->service->dataFormat($result_style_data, $params['date']);
 
         // 將資料存至`purchase_record`
         $repository_record = new Repository\PurchaseRecordRepository();

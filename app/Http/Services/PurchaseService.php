@@ -12,11 +12,17 @@ use Illuminate\Support\Facades\Auth;
 
 class PurchaseService
 {
-    public function dataFormat($data)
+    /**
+     * 調整資料格式
+     * @param $data
+     * @param $purchaseDate
+     * @return mixed
+     */
+    public function dataFormat($data, $purchaseDate)
     {
         foreach ($data as $key => $datum){
             $data[$key]['product_style_id'] = $datum['id'];
-            $data[$key]['purchase_time'] = $datum['updated_at'];
+            $data[$key]['purchase_time'] = $purchaseDate;
             $data[$key]['mod_user'] = Auth::user()['account'];
             $data[$key]['quantity'] = $datum['quality'];
             $data[$key]['updated_at'] = date('Y-m-d H:i:s');

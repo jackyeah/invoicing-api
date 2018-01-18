@@ -25,6 +25,7 @@ class ProductRepository extends InitRepository implements RepositoryInterface
     }
 
     /**
+     * 建立商品基本資料
      * @param $name
      * @param $purchase_date
      * @param $coast

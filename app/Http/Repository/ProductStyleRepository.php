@@ -24,6 +24,11 @@ class ProductStyleRepository extends InitRepository implements RepositoryInterfa
         parent::__construct(new ProductStyle());
     }
 
+    /**
+     * 建立商品樣式資料
+     * @param $arr_insert
+     * @return bool
+     */
     public function create($arr_insert)
     {
         $this->connectionMaster();
@@ -33,6 +38,11 @@ class ProductStyleRepository extends InitRepository implements RepositoryInterfa
         });
     }
 
+    /**
+     * 根據產品id，取得資料
+     * @param $product_id
+     * @return array|mixed
+     */
     public function getData($product_id)
     {
         return $this->selectTryCatch(function () use ($product_id) {
