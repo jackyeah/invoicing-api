@@ -32,4 +32,9 @@ class ProductStyle extends Model
         });
     }
 
+    public function purchase_record()
+    {
+        return $this->hasMany('App\Http\RepositoryProtocol\PurchaseRecord', 'product_style_id');
+    }
+
 }

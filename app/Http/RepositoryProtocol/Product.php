@@ -31,4 +31,9 @@ class Product extends Model
             $product->mod_user = Auth::user()['account'];
         });
     }
+
+    public function product_style()
+    {
+        return $this->hasMany('App\Http\RepositoryProtocol\ProductStyle', 'id');
+    }
 }

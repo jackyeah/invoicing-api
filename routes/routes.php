@@ -25,4 +25,9 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
         $app->get('', 'PurchaseController@index');
     });
 
+    // 庫存
+    $app->group(['prefix' => 'inventory'], function () use ($app) {
+        // 取得庫存清單
+        $app->get('', 'InventoryController@index');
+    });
 });
