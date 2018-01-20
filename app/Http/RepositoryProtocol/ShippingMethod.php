@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: dev
- * Date: 2018/1/17
- * Time: 下午 5:55
+ * Date: 2018/1/20
+ * Time: 下午 3:58
  */
 
 namespace App\Http\RepositoryProtocol;
@@ -12,7 +12,7 @@ use App\Http\RepositoryProtocol\Traits\RewriteTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class PurchaseRecord extends Model
+class ShippingMethod extends Model
 {
     use RewriteTrait;
 
@@ -21,14 +21,16 @@ class PurchaseRecord extends Model
         parent::__construct();
     }
 
-    protected $table = 'purchase_record';
+    protected $table = 'shipping_method';
     public $timestamps = false;
 
     public static function boot()
     {
-        ProductStyle::creating(function ($purchase_record) {
-            $purchase_record->updated_at = date('Y-m-d H:i:s');
-            $purchase_record->mod_user = Auth::user()['account'];
+        ShippingMethod::creating(function ($shipping_method) {
+            $shipping_method->updated_at = date('Y-m-d H:i:s');
+            $shipping_method->mod_user = Auth::user()['account'];
         });
     }
+
+
 }

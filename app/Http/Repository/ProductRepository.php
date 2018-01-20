@@ -50,6 +50,10 @@ class ProductRepository extends InitRepository implements RepositoryInterface
         }
     }
 
+    /**
+     * 取得庫存清單
+     * @return array|mixed
+     */
     public function index()
     {
         return $this->selectTryCatch(function () {
@@ -57,6 +61,22 @@ class ProductRepository extends InitRepository implements RepositoryInterface
                 ->join('product_style', 'product.id', '=', 'product_style.product_id')
                 ->select('product_style.id',DB::raw('product.id AS product_id'), 'product.name', 'product.coast', 'product.price'
                     , 'product_style.item_no', 'product_style.style', 'product_style.quality')
+                ->orderBy('product_id', 'DESC')
+                ->get()->toArray();
+        });
+    }
+
+    /**
+     * 取得安全庫存清單
+     * @return array|mixed
+     */
+    public function safe()
+    {
+        return $this->selectTryCatch(function () {
+            return $this->model
+                ->join('product_style', 'product.id', '=', 'product_style.product_id')
+                ->select('product_style.id',DB::raw('product.id AS product_id'), 'product.name'
+                    , 'product_style.item_no', 'product_style.style', 'product_style.quality', 'product_style.safety_stock')
                 ->orderBy('product_id', 'DESC')
                 ->get()->toArray();
         });

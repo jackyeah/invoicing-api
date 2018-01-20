@@ -13,6 +13,7 @@
 
 // 登入
 $app->post('admin/login', 'AdminController@login');
+
 $app->group(['middleware' => 'auth'], function () use ($app) {
     // 取得廠商清單
     $app->get('manufacturers', 'ManufacturersController@index');
@@ -29,5 +30,18 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
     $app->group(['prefix' => 'inventory'], function () use ($app) {
         // 取得庫存清單
         $app->get('', 'InventoryController@index');
+
+        // 取得安全庫存清單
+        $app->get('safe', 'InventoryController@safe');
+    });
+
+    // 設定
+    $app->group(['prefix' => 'setting'], function () use ($app) {
+        // 取得訂單來源
+        $app->get('order_source', 'SettingController@order_source');
+
+        // 取得寄送方式
+        $app->get('shipping_method', 'SettingController@shipping_method');
+
     });
 });

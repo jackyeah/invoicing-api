@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: dev
- * Date: 2018/1/19
- * Time: 下午 3:21
+ * Date: 2018/1/20
+ * Time: 下午 3:55
  */
 
 namespace App\Http\Controllers;
@@ -16,29 +16,30 @@ use App\Http\Controllers\Traits\GetParamsTrait;
 use App\Http\Services\PurchaseService;
 use App\Http\Helper\ErrorCode;
 
-class InventoryController extends InitController
+class SettingController extends InitController
 {
     use GetParamsTrait;
 
     /**
-     * 取得庫存清單
+     * 取得訂單來源
      * @return array
      */
-    public function index()
+    public function order_source()
     {
-        $repository_product = new Repository\ProductRepository();
+        $repository = new Repository\OrderSourceRepository();
 
-        return $this->success($repository_product->index());
+        return $this->success($repository->index());
     }
 
     /**
-     * 取得安全庫存清單
+     * 取得寄送方式
      * @return array
      */
-    public function safe()
+    public function shipping_method()
     {
-        $repository_product = new Repository\ProductRepository();
+        $repository = new Repository\ShippingMethodRepository();
 
-        return $this->success($repository_product->safe());
+        return $this->success($repository->index());
     }
+
 }
