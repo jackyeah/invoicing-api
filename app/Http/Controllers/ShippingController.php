@@ -13,13 +13,24 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repository;
 use App\Http\Controllers\Traits\GetParamsTrait;
-use App\Http\Services\PurchaseService;
+use App\Http\Services\ShippingService;
 use App\Http\Helper\ErrorCode;
 
 class ShippingController extends InitController
 {
     use GetParamsTrait;
 
+    private $service;
+
+    public function __construct(ShippingService $shippingService)
+    {
+        $this->service = $shippingService;
+    }
+
+    /**
+     * 賣出產品
+     * @return array
+     */
     public function sell()
     {
         // 驗證參數
@@ -59,17 +70,21 @@ class ShippingController extends InitController
                 'shipping_quality' => $item['quantity'], 'shipping_price' => $item['price']];
         }
 
-        $shippingID = time();
-
         $repository_record = new Repository\ShippingRecordRepository();
-        foreach ($dataList as $datum){
+        foreach ($dataList as $key => $datum){
             // 更改庫存數量
             $repository_style->updateQuantity($datum['id'], $datum['purchase_quality']);
-
-            // 存至出貨紀錄
-            $repository_record->create($shippingID, $params['order_source_id'], $params['shipping_method_id'], $datum['id'], $datum['quantity'], $datum['price']);
         }
 
+        // 存至出貨紀錄
+        $dataList = $this->service->dataFormat($dataList, time(), $params['order_source_id'], $params['shipping_method_id']);
+        $repository_record->create($dataList);
+
         return $this->success();
+    }
+
+    public function index()
+    {
+
     }
 }

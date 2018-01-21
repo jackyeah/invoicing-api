@@ -40,6 +40,9 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
     $app->group(['prefix' => 'shipping'], function () use ($app) {
         // 賣出產品
         $app->post('', 'ShippingController@sell');
+
+        // 取得訂單清單
+        $app->get('', 'ShippingController@index');
     });
 
     // 庫存

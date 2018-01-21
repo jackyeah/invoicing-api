@@ -25,25 +25,15 @@ class ShippingRecordRepository extends InitRepository implements RepositoryInter
     }
 
     /**
-     * @param $shippingID
-     * @param $source_id
-     * @param $shipping_method_id
-     * @param $product_style_id
-     * @param $quantity
-     * @param $price
+     * @param $insertData
      * @return bool
      */
-    public function create($shippingID, $source_id, $shipping_method_id, $product_style_id, $quantity, $price)
+    public function create($insertData)
     {
         $this->connectionMaster();
 
-        return $this->queryTryCatch(function () use ($shippingID, $source_id, $shipping_method_id, $product_style_id, $quantity, $price) {
-            $this->model->shippingID = $shippingID;
-            $this->model->source_id = $source_id;
-            $this->model->shipping_method_id = $shipping_method_id;
-            $this->model->product_style_id = $product_style_id;
-            $this->model->quantity = $quantity;
-            $this->model->save();
+        return $this->queryTryCatch(function () use ($insertData) {
+            $this->model->insert($insertData);
         });
     }
 }
