@@ -24,6 +24,19 @@ class OrderSource extends Model
     protected $table = 'order_source';
     public $timestamps = false;
 
+    public static $create_rules = [
+        'name' => 'required|min:2|max:100'
+    ];
+
+    public static $update_rules = [
+        'id' => 'required|exists:order_source,id',
+        'name' => 'required|min:2|max:100'
+    ];
+
+    public static $delete_rules = [
+        'id' => 'required|exists:order_source,id'
+    ];
+
     public static function boot()
     {
         OrderSource::creating(function ($order_source) {

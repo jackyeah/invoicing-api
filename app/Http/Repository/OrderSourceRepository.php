@@ -34,4 +34,44 @@ class OrderSourceRepository extends InitRepository implements RepositoryInterfac
             return $this->model->get()->toArray();
         });
     }
+
+    /**
+     * 新增訂單來源
+     * @param $name
+     * @return bool
+     */
+    public function create($name)
+    {
+        return $this->queryTryCatch(function () use ($name) {
+            $this->model->name = $name;
+            $this->model->save();
+        });
+    }
+
+    /**
+     * 更新訂單來源
+     * @param $id
+     * @param $name
+     * @return bool
+     */
+    public function update($id, $name)
+    {
+        return $this->queryTryCatch(function () use ($id, $name) {
+            $result = $this->model->find($id);
+            $result->name = $name;
+            $result->save();
+        });
+    }
+
+    /**
+     * 刪除訂單來源
+     * @param $id
+     * @return bool
+     */
+    public function delete($id)
+    {
+        return $this->queryTryCatch(function () use ($id) {
+            $this->model->destroy($id);
+        });
+    }
 }

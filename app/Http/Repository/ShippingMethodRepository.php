@@ -35,6 +35,43 @@ class ShippingMethodRepository extends InitRepository implements RepositoryInter
         });
     }
 
+    /**
+     * 新增寄送方式
+     * @param $name
+     * @return bool
+     */
+    public function create($name)
+    {
+        return $this->queryTryCatch(function () use ($name) {
+            $this->model->name = $name;
+            $this->model->save();
+        });
+    }
 
+    /**
+     * 更新寄送方式
+     * @param $id
+     * @param $name
+     * @return bool
+     */
+    public function update($id, $name)
+    {
+        return $this->queryTryCatch(function () use ($id, $name) {
+            $result = $this->model->find($id);
+            $result->name = $name;
+            $result->save();
+        });
+    }
 
+    /**
+     * 刪除寄送方式
+     * @param $id
+     * @return bool
+     */
+    public function delete($id)
+    {
+        return $this->queryTryCatch(function () use ($id) {
+            $this->model->destroy($id);
+        });
+    }
 }

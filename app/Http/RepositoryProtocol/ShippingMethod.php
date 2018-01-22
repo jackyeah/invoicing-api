@@ -24,6 +24,19 @@ class ShippingMethod extends Model
     protected $table = 'shipping_method';
     public $timestamps = false;
 
+    public static $create_rules = [
+        'name' => 'required|min:2|max:100'
+    ];
+
+    public static $update_rules = [
+        'id' => 'required|exists:shipping_method,id',
+        'name' => 'required|min:2|max:100'
+    ];
+
+    public static $delete_rules = [
+        'id' => 'required|exists:shipping_method,id'
+    ];
+
     public static function boot()
     {
         ShippingMethod::creating(function ($shipping_method) {
