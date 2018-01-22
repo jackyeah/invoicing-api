@@ -36,12 +36,12 @@ class PurchaseRecordRepository extends InitRepository implements RepositoryInter
                 ->join('product', 'product_style.product_id', '=', 'product.id')
                 ->select(DB::raw('purchase_record.id AS purchase_id'), 'product.name', 'product_style.item_no', 'purchase_record.quantity',
                     DB::raw('product_style.quality AS totalQuantity'), 'product_style.style', 'product.coast', 'purchase_record.purchase_time')
-                ->orderBy('purchase_record.updated_at', 'ASC')->get()->toArray();
+                ->orderBy('purchase_record.updated_at', 'DESC')->get()->toArray();
         });
     }
 
     /**
-     * 建立進貨紀錄
+     * 建立進貨紀錄，多筆
      * @param $insertData
      * @return bool
      */
@@ -51,6 +51,27 @@ class PurchaseRecordRepository extends InitRepository implements RepositoryInter
 
         return $this->queryTryCatch(function () use ($insertData) {
             $this->model->insert($insertData);
+        });
+    }
+
+    /**
+     * 建立進貨紀錄，單筆
+     * @param $product_style_id
+     * @param $quantity
+     * @param $purchase_time
+     * @param $account
+     * @return bool
+     */
+    public function create_single($product_style_id, $quantity, $purchase_time, $account)
+    {
+        $this->connectionMaster();
+
+        return $this->queryTryCatch(function () use ($product_style_id, $quantity, $purchase_time, $account) {
+            $this->model->product_style_id = $product_style_id;
+            $this->model->quantity = $quantity;
+            $this->model->purchase_time = $purchase_time;
+            $this->model->mod_user = $account;
+            $this->model->save();
         });
     }
 }

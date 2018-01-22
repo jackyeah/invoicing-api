@@ -81,4 +81,19 @@ class ProductRepository extends InitRepository implements RepositoryInterface
                 ->get()->toArray();
         });
     }
+
+    /**
+     * 根據 `id` ，更新成本
+     * @param $id
+     * @param $coast
+     * @return bool
+     */
+    public function updateCoast($id, $coast)
+    {
+        return $this->queryTryCatch(function () use ($id, $coast) {
+            $result = $this->model->find($id);
+            $result->coast = $coast;
+            $result->save();
+        });
+    }
 }

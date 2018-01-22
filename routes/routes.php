@@ -24,6 +24,9 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
 
         // 查看進貨紀錄
         $app->get('', 'PurchaseController@index');
+
+        // 舊商品補貨
+        $app->put('', 'PurchaseController@purchase');
     });
 
     // 庫存

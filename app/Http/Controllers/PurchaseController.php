@@ -111,4 +111,42 @@ class PurchaseController extends InitController
 
         return $this->success();
     }
+
+    /**
+     * 補貨
+     * @return array
+     */
+    public function purchase()
+    {
+        // 驗證參數
+        $validator = Validator::make(Input::all(),
+            [
+                'id' => 'required|exists:product_style,id',
+                'date' => 'required|date',
+                'coast' => 'required|int',
+                'quantity' => 'required|int'
+            ]);
+        if ($validator->fails()) {
+            return $this->fail(ErrorCode::VALIDATE_ERROR);
+        }
+
+        $params = self::getParams(['id', 'date', 'coast', 'quantity']);
+
+        // 寫入進貨紀錄，將資料存至`purchase_record`
+        $repository_record = new Repository\PurchaseRecordRepository();
+        $repository_record->create_single($params['id'], $params['quantity'], $params['date'], Auth::user()['account']);
+
+        $repository_style = new Repository\ProductStyleRepository();
+        // 取得目前產品數量
+        $result = $repository_style->getQuality($params['id']);
+
+        // 增加產品數量，更新 `product_style` 的數量
+        $repository_style->updateQuantity($params['id'], (int)$params['quantity'] + (int)$result['quality']);
+
+        // 更新 `product` 的成本
+        $repository_product = new Repository\ProductRepository();
+        $repository_product->updateCoast($result['product_id'], $params['coast']);
+
+        return $this->success();
+    }
 }

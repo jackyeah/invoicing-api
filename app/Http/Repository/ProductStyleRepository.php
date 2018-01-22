@@ -39,7 +39,7 @@ class ProductStyleRepository extends InitRepository implements RepositoryInterfa
     }
 
     /**
-     * 根據產品id，取得資料
+     * 根據 `product_id` ，取得資料
      * @param $product_id
      * @return array|mixed
      */
@@ -47,6 +47,33 @@ class ProductStyleRepository extends InitRepository implements RepositoryInterfa
     {
         return $this->selectTryCatch(function () use ($product_id) {
             return $this->model->select('id', 'quality', 'updated_at')->where('product_id', $product_id)->get()->toArray();
+        });
+    }
+
+    /**
+     * 根據id，取得資料
+     * @param $id
+     * @return array|mixed
+     */
+    public function getQuality($id)
+    {
+        return $this->selectTryCatch(function () use ($id) {
+            return $this->model->select('product_id', 'quality')->find($id)->toArray();
+        });
+    }
+
+    /**
+     * 根據產品id，更新數量
+     * @param $product_id
+     * @param $quantity
+     * @return bool
+     */
+    public function updateQuantity($product_id, $quantity)
+    {
+        return $this->queryTryCatch(function () use ($product_id, $quantity) {
+            $result = $this->model->find($product_id);
+            $result->quality = $quantity;
+            $result->save();
         });
     }
 }
