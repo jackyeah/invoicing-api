@@ -27,6 +27,12 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
 
         // 舊商品補貨
         $app->put('', 'PurchaseController@purchase');
+
+        // 編輯進貨紀錄
+        $app->put('data', 'PurchaseController@edit_purchase_data');
+
+        // 刪除進貨紀錄
+        $app->delete('data', 'PurchaseController@delete_purchase_data');
     });
 
     // 庫存

@@ -15,6 +15,7 @@ use App\Http\Repository;
 use App\Http\Controllers\Traits\GetParamsTrait;
 use App\Http\Services\PurchaseService;
 use App\Http\Helper\ErrorCode;
+use Illuminate\Validation\Rules\In;
 
 class PurchaseController extends InitController
 {
@@ -148,5 +149,96 @@ class PurchaseController extends InitController
         $repository_product->updateCoast($result['product_id'], $params['coast']);
 
         return $this->success();
+    }
+
+    /**
+     * 編輯進貨紀錄
+     * @return array
+     */
+    public function edit_purchase_data()
+    {
+        // 驗證參數
+        $validator = Validator::make(Input::all(),
+            [
+                'id' => 'required|exists:purchase_record,id',
+                'date' => 'required|date',
+                'quantity' => 'required|int|min:0'
+            ]);
+        if ($validator->fails()) {
+            return $this->fail(ErrorCode::VALIDATE_ERROR);
+        }
+
+        $params = self::getParams(['id', 'date', 'style', 'quantity']);
+
+        // 從 `purchase_record` 取得該次進貨紀錄的數量
+        $repository_record = new Repository\PurchaseRecordRepository();
+        $result_record = $repository_record->getQuantityData($params['id']);
+
+        // 從 `product_style` 取得該品項目前的數量
+        $repository_style = new Repository\ProductStyleRepository();
+        $result_style = $repository_style->getQuality($result_record['product_style_id']);
+
+        // 比對調整後的數量，若為負數，則回傳錯誤訊息
+        $newQuantity = $result_style['quality'] + ( $params['quantity'] - $result_record['quantity']);
+
+        if($newQuantity < 0){
+            return $this->fail(ErrorCode::INPUT_PARAMS_ERROR);
+        }
+
+        // 更新 `purchase_record`
+        $result_update_record = $repository_record->update($params['id'], $params['quantity'], $params['date']);
+
+        // 更新 `product_style`
+        $result_update_style = $repository_style->updateQuantity($result_record['product_style_id'], $newQuantity);
+
+        if($result_update_record && $result_update_style){
+            return $this->success();
+        }else{
+            return $this->fail(ErrorCode::UNABLE_UPDATE);
+        }
+    }
+
+    /**
+     * 刪除進貨紀錄
+     * @return array
+     */
+    public function delete_purchase_data()
+    {
+        // 驗證參數
+        $validator = Validator::make(Input::all(),
+            [
+                'id' => 'required|exists:purchase_record,id'
+            ]);
+        if ($validator->fails()) {
+            return $this->fail(ErrorCode::VALIDATE_ERROR);
+        }
+
+        // 從 `purchase_record` 取得該次進貨紀錄的數量
+        $repository_record = new Repository\PurchaseRecordRepository();
+        $result_record = $repository_record->getQuantityData(Input::get('id'));
+
+        // 從 `product_style` 取得該品項目前的數量
+        $repository_style = new Repository\ProductStyleRepository();
+        $result_style = $repository_style->getQuality($result_record['product_style_id']);
+
+        // 比對調整後的數量，若為負數，則回傳錯誤訊息
+        $newQuantity = $result_style['quality'] + ( 0 - $result_record['quantity']);
+
+        if($newQuantity < 0){
+            return $this->fail(ErrorCode::INPUT_PARAMS_ERROR);
+        }
+
+        // 刪除 `purchase_record` 紀錄
+        $result_delete = $repository_record->delete(Input::get('id'));
+
+        // 更新 `product_style`
+        $result_update_style = $repository_style->updateQuantity($result_record['product_style_id'], $newQuantity);
+
+        if($result_delete && $result_update_style){
+            return $this->success();
+        }else{
+            return $this->fail(ErrorCode::UNABLE_UPDATE);
+        }
+
     }
 }

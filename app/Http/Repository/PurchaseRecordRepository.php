@@ -74,4 +74,45 @@ class PurchaseRecordRepository extends InitRepository implements RepositoryInter
             $this->model->save();
         });
     }
+
+    /**
+     * 根據 `id` ，取得數量 `quantity`, `product_style_id`
+     * @param $id
+     * @return array|mixed
+     */
+    public function getQuantityData($id)
+    {
+        return $this->selectTryCatch(function () use ($id) {
+            return $this->model->select('product_style_id', 'quantity')->find($id)->toArray();
+        });
+    }
+
+    /**
+     * 更新進貨紀錄的數量, 日期
+     * @param $id
+     * @param $quantity
+     * @param $date
+     * @return bool
+     */
+    public function update($id, $quantity, $date)
+    {
+        $this->connectionMaster();
+
+        return $this->queryTryCatch(function () use ($id, $quantity, $date) {
+            $result = $this->model->find($id);
+
+            $result->quantity = $quantity;
+            $result->purchase_time = $date;
+            $result->save();
+        });
+    }
+
+    public function delete($id)
+    {
+        $this->connectionMaster();
+
+        return $this->queryTryCatch(function () use ($id) {
+            $this->model->destroy($id);
+        });
+    }
 }
