@@ -20,6 +20,7 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
 
     // 進貨
     $app->group(['prefix' => 'purchase'], function () use ($app) {
+        // 進貨新產品
         $app->post('', 'PurchaseController@create');
 
         // 查看進貨紀錄
@@ -33,6 +34,12 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
 
         // 刪除進貨紀錄
         $app->delete('data', 'PurchaseController@delete_purchase_data');
+    });
+
+    // 出貨
+    $app->group(['prefix' => 'shipping'], function () use ($app) {
+        // 賣出產品
+        $app->post('', 'ShippingController@sell');
     });
 
     // 庫存

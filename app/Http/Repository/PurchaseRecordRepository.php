@@ -36,7 +36,9 @@ class PurchaseRecordRepository extends InitRepository implements RepositoryInter
                 ->join('product', 'product_style.product_id', '=', 'product.id')
                 ->select(DB::raw('purchase_record.id AS purchase_id'), 'product.name', 'product_style.item_no', 'purchase_record.quantity',
                     DB::raw('product_style.quality AS totalQuantity'), 'product_style.style', 'product.coast', 'purchase_record.purchase_time')
-                ->orderBy('purchase_record.updated_at', 'DESC')->get()->toArray();
+                ->orderBy('purchase_record.purchase_time', 'DESC')
+                ->orderBy('purchase_record.updated_at', 'DESC')
+                ->get()->toArray();
         });
     }
 
