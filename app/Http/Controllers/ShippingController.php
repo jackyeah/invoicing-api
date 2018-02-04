@@ -56,8 +56,14 @@ class ShippingController extends InitController
 
         $repository_style = new Repository\ProductStyleRepository();
         $updateData = array();
+
+        $totalPrice = $profit = 0;
+
+        // 整理資料
         foreach ($dataList as $key => $item){
-            $result_style = $repository_style->getQuality($item['id']);
+            $result_style = $repository_style->getInfo($item['id']);
+            $totalPrice = $totalPrice + (int)$item['price'];
+            $profit = (int)$item['price'] - (int)$result_style['coast'];
 
             if((int)$item['quantity'] > (int)$result_style['quality']){
                 return $this->fail(ErrorCode::VALIDATE_ERROR);
@@ -76,15 +82,44 @@ class ShippingController extends InitController
             $repository_style->updateQuantity($datum['id'], $datum['purchase_quality']);
         }
 
-        // 存至出貨紀錄
-        $dataList = $this->service->dataFormat($dataList, time(), $params['order_source_id'], $params['shipping_method_id']);
+        // 將訂單金額, 利潤, 日期, 存至 shipping_list，並取得id
+        $repository_list = new Repository\ShippingListRepository();
+        $shippingListID = $repository_list->create($params['date'], $totalPrice, $profit, $params['order_source_id'],
+            $params['shipping_method_id']);
+
+        // 將訂單的各個產品紀錄存至 shipping_record 出貨紀錄
+        $dataList = $this->service->dataFormat($dataList, $shippingListID);
         $repository_record->create($dataList);
 
         return $this->success();
     }
 
+    /**
+     * 取得庫存清單
+     * @return array
+     */
     public function index()
     {
+        // 驗證參數
+        $validator = Validator::make(Input::all(),
+            [
+                'startDate' => 'date',
+                'endDate' => 'date'
+            ]);
+        if ($validator->fails()) {
+            return $this->fail(ErrorCode::VALIDATE_ERROR);
+        }
 
+        $params = self::getParams(['startDate', 'endDate']);
+
+        $repository_list = new Repository\ShippingListRepository();
+
+        if(empty($params['startDate']) || empty($params['endDate'])){
+            return $this->success($this->service->shippingListDataFormat($repository_list->index()));
+        }else{
+            return $this->success($this->service->shippingListDataFormat(
+                $repository_list->getListFixDate($params['startDate'], $params['endDate'])
+            ));
+        }
     }
 }

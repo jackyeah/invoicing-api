@@ -36,4 +36,24 @@ class ShippingRecordRepository extends InitRepository implements RepositoryInter
             $this->model->insert($insertData);
         });
     }
+
+    /*
+     * 原訂取庫存清單，現先註解掉
+     * public function index()
+    {
+
+        return $this->selectTryCatch(function () {
+            return $this->model
+                ->join('order_source', 'shipping_record.source_id', '=', 'order_source.id')
+                ->join('shipping_method', 'shipping_record.shipping_method_id', '=', 'shipping_method.id')
+                ->select('order_source.name', 'shipping_record.name', '')
+                ->get()->toArray();
+        });
+
+    }
+
+    public function getListFixDate($startDate, $endDate)
+    {
+
+    }*/
 }

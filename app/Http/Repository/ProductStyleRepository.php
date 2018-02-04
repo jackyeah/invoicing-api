@@ -76,4 +76,34 @@ class ProductStyleRepository extends InitRepository implements RepositoryInterfa
             $result->save();
         });
     }
+
+    /**
+     * 根據id，取得資料
+     * @param $id
+     * @return array|mixed
+     */
+    public function getInfo($id)
+    {
+        return $this->selectTryCatch(function () use ($id) {
+            return $this->model
+                ->join('product', 'product_style.product_id', '=', 'product.id')
+                ->select('product_style.product_id', 'product_style.quality', 'product.coast', 'product.coast')->find($id)->toArray();
+        });
+    }
+
+    /**
+     * 根據id，取得資料
+     * @param $id
+     * @return array|mixed
+     */
+    public function getNameInfo($id)
+    {
+        return $this->selectTryCatch(function () use ($id) {
+            return $this->model
+                ->join('product', 'product_style.product_id', '=', 'product.id')
+                ->select('product.name', 'product_style.style')->find($id)->toArray();
+        });
+    }
+
+
 }

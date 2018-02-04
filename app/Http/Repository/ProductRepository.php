@@ -75,7 +75,7 @@ class ProductRepository extends InitRepository implements RepositoryInterface
         return $this->selectTryCatch(function () {
             return $this->model
                 ->join('product_style', 'product.id', '=', 'product_style.product_id')
-                ->select('product_style.id',DB::raw('product.id AS product_id'), 'product.name'
+                ->select('product_style.id', DB::raw('product.id AS product_id'), 'product.name'
                     , 'product_style.item_no', 'product_style.style', 'product_style.quality', 'product_style.safety_stock')
                 ->orderBy('product_id', 'DESC')
                 ->get()->toArray();
