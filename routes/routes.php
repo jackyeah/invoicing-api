@@ -43,6 +43,15 @@ $app->group(['middleware' => 'auth'], function () use ($app) {
 
         // 取得訂單清單
         $app->get('', 'ShippingController@index');
+
+        // 取得單筆訂單資料
+        $app->get('detail', 'ShippingController@detail');
+
+        // 編輯訂單
+        $app->patch('', 'ShippingController@update');
+
+        // 刪除訂單
+        $app->delete('', 'ShippingController@delete');
     });
 
     // 庫存

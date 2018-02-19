@@ -58,7 +58,7 @@ class ShippingListRepository extends InitRepository implements RepositoryInterfa
     public function index()
     {
         return $this->selectTryCatch(function () {
-            return $this->model->with('shipping_record:shipping_list_id,product_style_id,quantity')
+            return $this->model->with('shipping_record:id,shipping_list_id,product_style_id,quantity')
                 ->join('order_source', 'shipping_list.order_source_id', '=', 'order_source.id')
                 ->join('shipping_method', 'shipping_list.shipping_method_id', '=', 'shipping_method.id')
                 ->select('shipping_list.id', 'shipping_list.total_price', 'shipping_list.profit', 'shipping_list.date',
@@ -77,13 +77,32 @@ class ShippingListRepository extends InitRepository implements RepositoryInterfa
     public function getListFixDate($startDate, $endDate)
     {
         return $this->selectTryCatch(function () use ($startDate, $endDate) {
-            return $this->model->with('shipping_record:shipping_list_id,product_style_id,quantity')
+            return $this->model->with('shipping_record:id,shipping_list_id,product_style_id,quantity')
                 ->join('order_source', 'shipping_list.order_source_id', '=', 'order_source.id')
                 ->join('shipping_method', 'shipping_list.shipping_method_id', '=', 'shipping_method.id')
                 ->select('shipping_list.id', 'shipping_list.total_price', 'shipping_list.profit', 'shipping_list.date',
                     DB::raw('order_source.name AS order_source_name'),
                     DB::raw('shipping_method.name AS shipping_method_name'))
                 ->whereBetween('date', [$startDate, $endDate])
+                ->get()->toArray();
+        });
+    }
+
+    /**
+     * 取得單筆訂單資料
+     * @param $id
+     * @return array|mixed
+     */
+    public function detail($id)
+    {
+        return $this->selectTryCatch(function () use($id) {
+            return $this->model->with('shipping_record:id,shipping_list_id,product_style_id,quantity')
+                ->join('order_source', 'shipping_list.order_source_id', '=', 'order_source.id')
+                ->join('shipping_method', 'shipping_list.shipping_method_id', '=', 'shipping_method.id')
+                ->select('shipping_list.id', 'shipping_list.total_price', 'shipping_list.profit', 'shipping_list.date',
+                    DB::raw('order_source.name AS order_source_name'),
+                    DB::raw('shipping_method.name AS shipping_method_name'))
+                ->where('shipping_list.id', $id)
                 ->get()->toArray();
         });
     }

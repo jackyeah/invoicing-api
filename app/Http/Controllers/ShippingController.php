@@ -122,4 +122,42 @@ class ShippingController extends InitController
             ));
         }
     }
+
+    /**
+     * 取得單筆訂單資料
+     * @return array
+     */
+    public function detail()
+    {
+        // 驗證參數
+        $validator = Validator::make(Input::all(),
+            [
+                'id' => 'required|exists:shipping_list,id'
+            ]);
+        if ($validator->fails()) {
+            return $this->fail(ErrorCode::VALIDATE_ERROR);
+        }
+
+        $repository_list = new Repository\ShippingListRepository();
+
+        return $this->success($this->service->shippingListDataFormat($repository_list->detail(Input::get('id'))));
+    }
+
+    /**
+     * 編輯訂單
+     * @return array
+     */
+    public function update()
+    {
+
+    }
+
+    /**
+     * 刪除訂單
+     * @return array
+     */
+    public function delete()
+    {
+
+    }
 }
