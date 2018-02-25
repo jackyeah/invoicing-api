@@ -64,6 +64,7 @@ class ShippingListRepository extends InitRepository implements RepositoryInterfa
                 ->select('shipping_list.id', 'shipping_list.total_price', 'shipping_list.profit', 'shipping_list.date',
                     DB::raw('order_source.name AS order_source_name'),
                     DB::raw('shipping_method.name AS shipping_method_name'))
+                ->orderBy('shipping_list.id', 'ASC')
                 ->get()->toArray();
         });
     }
@@ -101,7 +102,9 @@ class ShippingListRepository extends InitRepository implements RepositoryInterfa
                 ->join('shipping_method', 'shipping_list.shipping_method_id', '=', 'shipping_method.id')
                 ->select('shipping_list.id', 'shipping_list.total_price', 'shipping_list.profit', 'shipping_list.date',
                     DB::raw('order_source.name AS order_source_name'),
-                    DB::raw('shipping_method.name AS shipping_method_name'))
+                    DB::raw('order_source.id AS order_source_id'),
+                    DB::raw('shipping_method.name AS shipping_method_name'),
+                    DB::raw('shipping_method.id AS shipping_method_id'))
                 ->where('shipping_list.id', $id)
                 ->get()->toArray();
         });

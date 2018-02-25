@@ -13,12 +13,19 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Repository;
 use App\Http\Controllers\Traits\GetParamsTrait;
-use App\Http\Services\PurchaseService;
+use App\Http\Services\InventoryService;
 use App\Http\Helper\ErrorCode;
 
 class InventoryController extends InitController
 {
     use GetParamsTrait;
+
+    private $_service;
+
+    function __construct()
+    {
+        $this->_service = new InventoryService();
+    }
 
     /**
      * 取得庫存清單
@@ -39,6 +46,8 @@ class InventoryController extends InitController
     {
         $repository_product = new Repository\ProductRepository();
 
-        return $this->success($repository_product->safe());
+        return $this->success(
+            $this->_service->filterSafetyStock(Input::get('subtraction'), $repository_product->safe())
+        );
     }
 }
