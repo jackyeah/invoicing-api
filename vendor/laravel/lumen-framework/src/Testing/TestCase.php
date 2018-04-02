@@ -4,11 +4,11 @@ namespace Laravel\Lumen\Testing;
 
 use Mockery;
 use Exception;
-use PHPUnit_Framework_TestCase;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Contracts\Auth\Authenticatable;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
-abstract class TestCase extends PHPUnit_Framework_TestCase
+abstract class TestCase extends BaseTestCase
 {
     use Concerns\MakesHttpRequests;
 
@@ -104,6 +104,10 @@ abstract class TestCase extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         if (class_exists('Mockery')) {
+            if (($container = \Mockery::getContainer()) !== null) {
+                $this->addToAssertionCount($container->mockery_getExpectationCount());
+            }
+
             Mockery::close();
         }
 

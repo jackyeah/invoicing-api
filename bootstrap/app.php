@@ -101,12 +101,10 @@ $app->register(Illuminate\Redis\RedisServiceProvider::class);
 |
 */
 
-$app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
-    //require __DIR__ . '/../routes/web.php';
+$app->router->group([
+    'namespace' => 'App\Http\Controllers',
+], function ($app) {
     require __DIR__ . '/../routes/routes.php';
-    //require __DIR__ . '/../routes/other_festival.php';
-    //require __DIR__ . '/../routes/routes_backend.php';
-    //require __DIR__ . '/../routes/routes_front.php';
 });
 
 /*

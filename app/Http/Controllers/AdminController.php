@@ -60,7 +60,7 @@ class AdminController extends InitController
             return $this->fail($result);
         }
         Log::error(LogHelper::toFormatString('Input request params error'));
-        return $this->fail(ErrorCode::PARAMS_ERROR);
+        return $this->fail(ErrorCode::AccountOrPasswordError);
     }
 
     /**
