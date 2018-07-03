@@ -121,53 +121,5 @@ class AdminController extends InitController
         return $this->success($result);
     }
 
-    /**
-     * 更新使用者資訊
-     * @return array
-     */
-    public function update()
-    {
-        $params = self::getParams(['id', 'pwd', 'name', 'status', 'email']);
-        $auth = Auth::user();
 
-        //權限必須為最高權限才能修改 和 不能更改自己的权限
-        if ($auth['status'] != 9 || ($auth['status'] != $params['status'] && $auth['id'] == $params['id'])) {
-            return $this->fail(ErrorCode::AUTHORITY_ERROR);
-        }
-
-        $validator = Validator::make(Input::all(), Admin::updateRules());
-        if ($validator->fails()) {
-            Log::error(LogHelper::toFormatString('Input request params error'));
-            return $this->fail(ErrorCode::VALIDATE_ERROR);
-        }
-
-        $update_array = array();
-        $update_array['name'] = $params['name'];
-        $update_array['email'] = $params['email'];
-        $update_array['status'] = $params['status'];
-        $update_array['mod_user'] = Auth::user()->account;
-        if (! empty($params['pwd'])) {
-            $update_array['pwd'] = Hash::make($params['pwd']);
-        }
-
-        $result = $this->service->repository->update($params['id'], $update_array);
-        if ($result) {
-            $this->successRecord('update',$this->service->repository->getQueryLog());
-            return $this->success();
-        } else {
-            return $this->fail(ErrorCode::UNABLE_WRITE);
-        }
-    }
-
-    /**
-     * return Account List
-     * @return array
-     */
-    public function getList()
-    {
-        if ($list = $this->service->repository->getAccountList()) {
-            return $this->success(array_column($list, 'account'));
-        }
-        return [];
-    }
 }
